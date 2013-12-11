@@ -23,6 +23,24 @@ describe Ffprober::Parser do
     end
   end
 
+  describe "remote_files" do
+    before :each do
+      @ffprobe = Ffprober::Parser.from_file('http://dl.dropboxusercontent.com/u/77289509/v-dtrubyom-v-01.mov') 
+    end
+
+    it 'should determine the correct filename' do
+      @ffprobe.format.filename.should eq("http://dl.dropboxusercontent.com/u/77289509/v-dtrubyom-v-01.mov")
+    end
+
+    it "should find the correct size" do
+      @ffprobe.format.size.should eq("85260904")
+    end
+
+    it "should find the correct bit_rate" do
+      @ffprobe.format.bit_rate.should eq("387681")
+    end
+  end
+
   describe "from invalid file", if: Ffprober::FfprobeVersion.valid? do
     before :each do
       @ffprobe = Ffprober::Parser.from_file('spec/assets/empty_file')
