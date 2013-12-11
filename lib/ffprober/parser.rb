@@ -9,7 +9,7 @@ module Ffprober
                                   (version: #{FfprobeVersion.new.version.to_s})")
         end
 
-        json_output = `#{Ffprober.path} #{@@options} #{file_to_parse}`
+        json_output = run_ffprobe(file_to_parse)
         from_json(json_output)
       end
 
@@ -31,6 +31,14 @@ module Ffprober
                           raise InvalidInputFileError.new("Invalid input file") if json.empty?
                           json
                         end
+    end
+
+    def run_ffprobe(file_to_parse)
+      if /^https?:\/\//.match(file_to_parse)
+        `#{Ffprober.path} #{@@options} '#{file_to_parse}'`
+      else
+        `#{Ffprober.path} #{@@options} #{file_to_parse}`
+      end
     end
 
     def format
